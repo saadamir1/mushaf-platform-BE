@@ -121,31 +121,4 @@ export class UploadController {
     return { url };
   }
 
-  @Post('city-image/:cityId')
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Upload and update city image' })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'City image upload',
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
-  async uploadCityImage(
-    @Param('cityId') cityId: string,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    if (!file) {
-      throw new BadRequestException('No file uploaded');
-    }
-
-    const url = await this.uploadService.uploadCityImage(+cityId, file);
-    return { url };
-  }
 }

@@ -67,7 +67,6 @@ async function bootstrap() {
     )
     .addTag('auth', 'Authentication endpoints')
     .addTag('users', 'User management endpoints')
-    .addTag('cities', 'Cities CRUD endpoints (Example)')
     .addTag('upload', 'File upload endpoints')
     .addTag('health', 'Health check endpoints')
     .build();

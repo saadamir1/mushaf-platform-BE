@@ -1,14 +1,12 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { CloudinaryService } from '../common/services/cloudinary.service';
 import { UsersService } from '../users/users.service';
-import { CitiesService } from '../cities/cities.service';
 
 @Injectable()
 export class UploadService {
   constructor(
     private cloudinaryService: CloudinaryService,
     private usersService: UsersService,
-    private citiesService: CitiesService,
   ) {}
 
   async uploadImage(
@@ -53,22 +51,6 @@ export class UploadService {
 
     // Update user profile picture
     await this.usersService.update(userId, { profilePicture: url });
-
-    return url;
-  }
-
-  async uploadCityImage(cityId: number, file: Express.Multer.File): Promise<string> {
-    // Check if city exists
-    const city = await this.citiesService.findOne(cityId);
-    if (!city) {
-      throw new NotFoundException('City not found');
-    }
-
-    // Upload to Cloudinary
-    const url = await this.uploadImage(file, 'cities');
-
-    // Update city image
-    await this.citiesService.update(cityId, { imageUrl: url });
 
     return url;
   }

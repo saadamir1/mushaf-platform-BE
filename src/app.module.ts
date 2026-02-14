@@ -11,6 +11,8 @@ import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { AuditLog } from './common/entities/audit-log.entity';
+import { BookmarksModule } from './bookmarks/bookmarks.module';
+import { QuranModule } from './quran/quran.module';
 
 @Module({
   imports: [
@@ -87,6 +89,8 @@ import { AuditLog } from './common/entities/audit-log.entity';
     UsersModule,
     AuthModule,
     UploadModule,
+    QuranModule,
+    BookmarksModule,
   ],
   controllers: [AppController],
   providers: [
