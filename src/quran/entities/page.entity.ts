@@ -5,22 +5,22 @@ export class QuranPage {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ type: 'int', unique: true })
   pageNumber: number;
 
-  @Column()
+  @Column({ type: 'string' })
   imageUrl: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })
   startVerseId: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })
   endVerseId: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })
   startSurahNumber: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })
   endSurahNumber: number;
 
   @CreateDateColumn()

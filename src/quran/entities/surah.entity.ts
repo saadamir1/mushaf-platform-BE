@@ -6,19 +6,19 @@ export class Surah {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'int' })  
   surahNumber: number;
 
-  @Column()
+  @Column({ type: 'varchar' })  
   nameArabic: string;
 
-  @Column()
+  @Column({ type: 'varchar' })  
   nameEnglish: string;
 
-  @Column()
+  @Column({ type: 'varchar' })  
   nameUrdu: string;
 
-  @Column()
+  @Column({ type: 'int' })  
   versesCount: number;
 
   @Column({ type: 'enum', enum: ['Meccan', 'Medinan'] })

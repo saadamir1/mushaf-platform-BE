@@ -5,19 +5,19 @@ export class Juz {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ type: 'int', unique: true })  
   juzNumber: number;
 
-  @Column()
+  @Column({ type: 'int' })  
   startVerseId: number;
 
-  @Column()
+  @Column({ type: 'int' })  
   endVerseId: number;
 
-  @Column()
+  @Column({ type: 'int' })  
   startSurahNumber: number;
 
-  @Column()
+  @Column({ type: 'int' })  
   endSurahNumber: number;
 
   @CreateDateColumn()

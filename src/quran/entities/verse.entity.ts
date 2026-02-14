@@ -7,10 +7,10 @@ export class Verse {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'int' })  // ✅ FIXED
   surahId: number;
 
-  @Column()
+  @Column({ type: 'int' })  // ✅ FIXED
   verseNumber: number;
 
   @Column({ type: 'text' })
@@ -22,10 +22,10 @@ export class Verse {
   @Column({ type: 'text', nullable: true })
   tafseerUrdu: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true }) 
   pageNumber: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'int', nullable: true })  
   juzNumber: number;
 
   @ManyToOne(() => Surah, surah => surah.verses)
