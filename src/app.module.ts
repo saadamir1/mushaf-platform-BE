@@ -6,7 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { join } from 'path';
-import { CitiesModule } from './cities/cities.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
@@ -85,7 +84,6 @@ import { AuditLog } from './common/entities/audit-log.entity';
       },
     }),
     TypeOrmModule.forFeature([AuditLog]),
-    CitiesModule,
     UsersModule,
     AuthModule,
     UploadModule,
