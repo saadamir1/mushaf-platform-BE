@@ -8,7 +8,7 @@ export class QuranPage {
   @Column({ type: 'int', unique: true })
   pageNumber: number;
 
-  @Column({ type: 'string' })
+  @Column({ type: 'text' })
   imageUrl: string;
 
   @Column({ type: 'int', nullable: true })
