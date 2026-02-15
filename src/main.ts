@@ -47,28 +47,20 @@ async function bootstrap() {
 
   // Swagger configuration
   const config = new DocumentBuilder()
-    .setTitle('NestJS Professional Foundation API')
-    .setDescription(
-      'Production-ready REST API with JWT authentication, RBAC, audit logging, and comprehensive features',
-    )
+    .setTitle('Mushaf Platform API')  // Changed
+    .setDescription('Digital Quran Platform with Urdu translations')  // Changed
     .setVersion('1.0')
     .addServer('http://localhost:3000', 'Development')
-    .addServer('https://nestjs-pg-crud.onrender.com', 'Production')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'JWT',
-        description: 'Enter JWT token',
-        in: 'header',
-      },
-      'JWT-auth',
-    )
-    .addTag('auth', 'Authentication endpoints')
-    .addTag('users', 'User management endpoints')
-    .addTag('upload', 'File upload endpoints')
-    .addTag('health', 'Health check endpoints')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'JWT-auth')
+    .addTag('auth', 'Authentication')
+    .addTag('users', 'User management')
+    .addTag('upload', 'File uploads')
+    .addTag('Quran - Surahs', 'Surah endpoints')
+    .addTag('Quran - Verses', 'Verse queries')
+    .addTag('Quran - Juz', 'Juz navigation')
+    .addTag('Quran - Pages', 'Page management')
+    .addTag('Quran - Search', 'Search functionality')
+    .addTag('Bookmarks & Reading Progress', 'User features')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

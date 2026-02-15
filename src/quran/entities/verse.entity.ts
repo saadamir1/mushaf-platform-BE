@@ -7,10 +7,10 @@ export class Verse {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int' })  // ✅ FIXED
+  @Column({ type: 'int' })  
   surahId: number;
 
-  @Column({ type: 'int' })  // ✅ FIXED
+  @Column({ type: 'int' }) 
   verseNumber: number;
 
   @Column({ type: 'text' })
