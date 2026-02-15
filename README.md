@@ -1,173 +1,492 @@
-# Mushaf Platform Backend (NestJS + PostgreSQL)
+# Mushaf Platform - Digital Quran Backend API
 
-A backend API for the Mushaf Platform, built with NestJS, TypeORM, and PostgreSQL. Supports Quran modules (Surahs, Verses, Pages, Juz) and Bookmarks.
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat&logo=nestjs&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
 
----
-
-## Table of Contents
-
-1. [Features](#features)
-2. [Prerequisites](#prerequisites)
-3. [Setup](#setup)
-4. [Environment Variables](#environment-variables)
-5. [Database Configuration](#database-configuration)
-6. [Development Workflow](#development-workflow)
-7. [Migrations](#migrations)
-8. [Testing](#testing)
-9. [Folder Structure](#folder-structure)
-10. [Contributing](#contributing)
+A comprehensive, production-ready REST API for delivering digital Quran content with Urdu translations, tafseer, search capabilities, and user personalization features.
 
 ---
 
-## Features
+## 🎯 Project Purpose
 
-* User management with authentication (JWT + refresh tokens)
-* Quran modules:
+**Mushaf Platform** is designed to make Quranic content digitally accessible with a focus on:
 
-  * Surahs
-  * Verses
-  * Pages
-  * Juz
-* Bookmark management
-* Audit logs
-* Rate limiting (ThrottlerModule)
-* File uploads (Cloudinary or local)
-* TypeORM-powered PostgreSQL DB
-* Dev-friendly auto-sync & migrations support
+- **Accessibility**: Large text and simple navigation for elders
+- **Education**: Urdu translations and tafseer for children and students
+- **Research**: Structured indexing and search for scholars
+- **Modern UX**: Fast, responsive API for web and mobile applications
+
+The platform prioritizes accuracy, respect for Islamic content, and user-friendly access to the Holy Quran.
+
+### **Target Audience:**
+- Muslims seeking reliable digital Quran access
+- Students learning Quran with translations
+- Scholars researching Quranic verses
+- Developers building Islamic applications
+
+### **Key Features:**
+- ✅ Complete Quran content (114 Surahs, 6,236+ verses)
+- ✅ Urdu translations and tafseer integration
+- ✅ Multiple navigation modes (Surah, Juz, Page)
+- ✅ Full-text search (Arabic, Urdu, Tafseer)
+- ✅ User bookmarks and reading progress tracking
+- ✅ JWT authentication with role-based access
+- ✅ RESTful API with Swagger documentation
+- ✅ Ready for scanned page integration (950+ pages via CDN)
 
 ---
 
-## Prerequisites
+## 🏗️ Tech Stack
 
-* Node.js ≥ 20
-* npm ≥ 9
-* PostgreSQL ≥ 15
-* Git
+| Layer | Technology |
+|-------|------------|
+| **Framework** | NestJS (TypeScript) |
+| **Database** | PostgreSQL 17+ with TypeORM |
+| **API** | REST with OpenAPI/Swagger |
+| **Authentication** | JWT (Access + Refresh Tokens) |
+| **File Storage** | Cloudinary CDN (ready) |
+| **Documentation** | Swagger UI (`/api/docs`) |
+| **Development** | Hot reload, TypeScript strict mode |
 
 ---
 
-## Setup
+## 🚀 Quick Start
 
+### **Prerequisites:**
+- Node.js 18+
+- PostgreSQL 17+
+- npm or yarn
+
+### **1. Clone & Install**
 ```bash
-# 1. Clone repo
-git clone https://github.com/<your-username>/mushaf-platform-BE.git
+git clone https://github.com/saadamir1/mushaf-platform-BE.git
 cd mushaf-platform-BE
-
-# 2. Install dependencies
 npm install
-
-# 3. Configure environment variables
-cp .env.example .env
-# Edit .env with your DB credentials and NODE_ENV
 ```
 
----
+### **2. Database Setup**
+```sql
+-- Connect to PostgreSQL
+psql -U postgres
 
-## Environment Variables
+-- Create database and user
+CREATE USER mushaf_admin WITH PASSWORD 'secret';
+CREATE DATABASE mushaf_platform_db OWNER mushaf_admin;
+GRANT ALL PRIVILEGES ON DATABASE mushaf_platform_db TO mushaf_admin;
 
-| Variable     | Description                                 | Example                           |
-| ------------ | ------------------------------------------- | --------------------------------- |
-| NODE_ENV     | Environment (`development` or `production`) | development                       |
-| DATABASE_URL | Optional: Full DB URL for production        | postgres://user:pass@host:port/db |
-| DB_HOST      | PostgreSQL host for dev                     | localhost                         |
-| DB_PORT      | PostgreSQL port                             | 5432                              |
-| DB_USERNAME  | PostgreSQL username                         | postgres                          |
-| DB_PASSWORD  | PostgreSQL password                         | password                          |
-| DB_NAME      | PostgreSQL database name                    | mushaf_platform_dev               |
+-- Exit
+\q
+```
 
----
+### **3. Environment Configuration**
+```bash
+# Copy example environment file
+cp .env.example .env
 
-## Database Configuration
+# Edit .env with your values
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_USERNAME=mushaf_admin
+DB_PASSWORD=secret
+DB_NAME=mushaf_platform_db
+JWT_SECRET=your-jwt-secret-key
+JWT_REFRESH_SECRET=your-refresh-secret
+NODE_ENV=development
+```
 
-* **Development**: `synchronize: true` (auto-sync tables for quick dev)
-* **Production**: `synchronize: false` and migrations are required
+### **4. Seed Sample Data**
+```bash
+# Import test data (3 surahs, 3 verses, 1 juz)
+npm run seed
+```
 
-> **Tip:** Once core modules are stable, generate a **baseline migration** to ensure team consistency.
-
----
-
-## Development Workflow
-
-1. Run the app in development:
-
+### **5. Start Development Server**
 ```bash
 npm run start:dev
-```
 
-2. Add new entities/modules (e.g., Quran modules, bookmarks).
-
-3. Test changes locally using dev DB.
-
-4. Commit + push changes:
-
-```bash
-git add .
-git commit -m "feat: add Surah module"
-git push origin main
-```
-
-5. Once stable, switch to **migration-first workflow**:
-
-```ts
-// app.module.ts
-synchronize: false,
-migrations: [join(process.cwd(), 'dist', 'migrations', '*.{ts,js}')],
-migrationsRun: false,
+# Server runs on: http://localhost:3000
+# API Base: http://localhost:3000/api/v1
+# Swagger Docs: http://localhost:3000/api/docs
 ```
 
 ---
 
-## Migrations
+## 📚 API Documentation
 
-* **Generate migration:**
-
-```bash
-npm run typeorm migration:generate src/migrations/DescriptiveName
+### **Base URL:**
+```
+Development: http://localhost:3000/api/v1
 ```
 
-* **Run migrations:**
-
-```bash
-npm run migration:run
+### **Interactive Documentation:**
+```
+Swagger UI: http://localhost:3000/api/docs
 ```
 
-* **Commit migration files** with entity changes to Git:
+### **Core Endpoints:**
 
-```bash
-git add src/migrations/*
-git commit -m "feat: add Surah entity and migration"
+#### **Surahs**
+```http
+GET    /quran/surahs              # List all surahs
+GET    /quran/surahs/:number      # Get surah by number
+GET    /quran/surahs/:number/verses  # Get surah with verses
 ```
 
-> New developers can run `npm run migration:run` to recreate the exact DB schema.
+#### **Verses**
+```http
+GET    /quran/verses              # List verses (paginated)
+GET    /quran/verses/surah/:id    # Get verses by surah
+GET    /quran/verses/page/:number # Get verses by page
+GET    /quran/verses/juz/:number  # Get verses by juz
+GET    /quran/verses/search?q=keyword  # Search verses
+GET    /quran/verses/:id          # Get single verse
+```
+
+#### **Juz (Para)**
+```http
+GET    /quran/juz                 # List all juz (30 parts)
+GET    /quran/juz/:number         # Get juz by number
+```
+
+#### **Pages**
+```http
+GET    /quran/pages               # List pages (paginated)
+GET    /quran/pages/:number       # Get page by number
+```
+
+#### **Search**
+```http
+GET    /quran/search?q=keyword    # Search everywhere
+GET    /quran/search/verses?q=keyword  # Search verses only
+GET    /quran/search/surahs?q=keyword  # Search surahs only
+```
+
+#### **Bookmarks** (Protected - JWT Required)
+```http
+POST   /bookmarks                 # Create bookmark
+GET    /bookmarks                 # Get user bookmarks
+DELETE /bookmarks/:id             # Delete bookmark
+PATCH  /bookmarks/:id/note        # Update bookmark note
+POST   /bookmarks/progress        # Update reading progress
+GET    /bookmarks/progress        # Get reading progress
+```
+
+#### **Authentication**
+```http
+POST   /auth/login                # Login
+POST   /auth/register             # Register (admin only)
+POST   /auth/refresh              # Refresh token
+POST   /auth/forgot-password      # Request password reset
+POST   /auth/reset-password       # Reset password
+```
 
 ---
 
-## Testing
+## 📊 Database Schema
+```
+┌─────────┐       ┌─────────┐       ┌──────────────┐
+│ Surah   │───┬──>│ Verse   │       │ QuranPage    │
+│ (114)   │   │   │ (6236)  │       │ (604)        │
+└─────────┘   │   └─────────┘       └──────────────┘
+              │
+              │   ┌─────────┐       ┌──────────────┐
+              │   │ Juz     │       │ Bookmark     │
+              │   │ (30)    │       │ (user-based) │
+              │   └─────────┘       └──────────────┘
+              │
+              └──>┌──────────────────┐
+                  │ ReadingProgress  │
+                  │ (user-based)     │
+                  └──────────────────┘
+```
 
-* Testing setup (future): Jest + Supertest
-* For now, test manually on dev DB (`synchronize: true`)
+### **Key Entities:**
+- **Surah**: 114 chapters with metadata (name, verses count, revelation type)
+- **Verse**: 6,236+ verses with Arabic text, Urdu translation, tafseer
+- **QuranPage**: 604 pages with scanned image URLs (ready for CDN)
+- **Juz**: 30 parts for structured navigation
+- **Bookmark**: User-specific verse bookmarks with notes
+- **ReadingProgress**: Track last read position per user
 
 ---
 
-## Folder Structure
-
+## 🗂️ Project Structure
 ```
-src/
- ├─ auth/          # Authentication module
- ├─ users/         # Users module
- ├─ quran/         # Quran entities: surahs, verses, pages, juz
- ├─ bookmarks/     # Bookmarks module
- ├─ upload/        # File upload module
- ├─ common/        # Middleware, entities, guards, etc.
- ├─ migrations/    # TypeORM migration files
- ├─ app.module.ts  # Main application module
- └─ main.ts        # Entry point
+mushaf-platform-BE/
+├── src/
+│   ├── auth/              # JWT authentication
+│   ├── users/             # User management
+│   ├── quran/             # Main Quran module
+│   │   ├── entities/      # Surah, Verse, Page, Juz entities
+│   │   ├── surahs/        # Surah CRUD operations
+│   │   ├── verses/        # Verse queries, search, filters
+│   │   ├── juz/           # Juz navigation
+│   │   ├── pages/         # Page management
+│   │   └── search/        # Full-text search service
+│   ├── bookmarks/         # User bookmarks & reading progress
+│   ├── upload/            # Cloudinary integration
+│   ├── common/            # Guards, services, middleware
+│   │   ├── decorators/    # Custom decorators
+│   │   ├── entities/      # Shared entities
+│   │   ├── filters/       # Exception handling
+│   │   ├── guards/        # Authorization
+│   │   ├── middleware/    # Logging
+│   │   └── services/      # Shared services
+│   ├── migrations/        # Database migrations
+│   └── scripts/           # Seed and data import scripts
+├── .env                   # Environment variables
+├── package.json
+└── README.md
 ```
 
 ---
 
-## Contributing
+## 🔧 Available Scripts
+```bash
+# Development
+npm run start:dev          # Start development server with hot reload
+npm run start:prod         # Start production server
+npm run build              # Build for production
 
-* Fork repo → Create feature branch → Commit → Push → Create PR
-* Use migrations for schema changes
-* Keep `main` branch deployable; create `dev` branch if working on risky or experimental features
+# Database
+npm run seed               # Import sample data
+npm run migration:run      # Run database migrations
+npm run migration:generate # Generate migration from entity changes
+npm run migration:revert   # Revert last migration
+
+# Testing
+npm test                   # Run unit tests
+npm run test:e2e           # Run end-to-end tests
+npm run test:cov           # Run tests with coverage
+```
+
+---
+
+## 🧪 Example API Calls
+
+### **Get All Surahs:**
+```bash
+curl http://localhost:3000/api/v1/quran/surahs
+```
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "surahNumber": 1,
+    "nameArabic": "الفاتحة",
+    "nameEnglish": "Al-Fatihah",
+    "nameUrdu": "فاتحہ",
+    "versesCount": 7,
+    "revelationType": "Meccan",
+    "descriptionUrdu": "قرآن کی ابتدائی سورت",
+    "createdAt": "2026-02-15T00:00:00.000Z"
+  }
+]
+```
+
+### **Search Verses:**
+```bash
+curl "http://localhost:3000/api/v1/quran/search/verses?q=رحم"
+```
+
+**Response:**
+```json
+{
+  "query": "رحم",
+  "results": [
+    {
+      "id": 1,
+      "verseNumber": 1,
+      "textArabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+      "textUrdu": "شروع اللہ کے نام سے جو بڑا مہربان نہایت رحم والا ہے",
+      "surah": {
+        "surahNumber": 1,
+        "nameEnglish": "Al-Fatihah"
+      }
+    }
+  ],
+  "count": 1
+}
+```
+
+### **Create Bookmark (Protected):**
+```bash
+curl -X POST http://localhost:3000/api/v1/bookmarks \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"verseId": 1, "note": "Important verse"}'
+```
+
+---
+
+## 🔐 Authentication
+
+### **Bootstrap Admin (First Time):**
+```bash
+curl -X POST http://localhost:3000/api/v1/auth/bootstrap-admin \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@mushaf.com",
+    "password": "Admin@123",
+    "firstName": "Admin",
+    "lastName": "User"
+  }'
+```
+
+### **Login:**
+```bash
+curl -X POST http://localhost:3000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@mushaf.com",
+    "password": "Admin@123"
+  }'
+```
+
+**Response:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+Use `access_token` in Authorization header:
+```
+Authorization: Bearer YOUR_ACCESS_TOKEN
+```
+
+---
+
+## 📈 Roadmap
+
+### **Phase 1: Backend Foundation** ✅ (COMPLETED)
+- [x] Database schema and entities
+- [x] Core CRUD APIs (Surahs, Verses, Juz, Pages)
+- [x] Search functionality
+- [x] User authentication
+- [x] Bookmarks and reading progress
+- [x] API documentation (Swagger)
+
+### **Phase 2: Data Integration** ⏳ (IN PROGRESS)
+- [ ] Import full Quran data (6,236 verses)
+- [ ] Upload scanned pages to Cloudinary (950+ pages)
+- [ ] Integrate complete Urdu translations
+- [ ] Add comprehensive tafseer
+- [ ] Map verses to pages accurately
+
+### **Phase 3: Frontend Development** ⏳ (NEXT)
+- [ ] React/Next.js web interface
+- [ ] Elder-friendly UI (large text, simple navigation)
+- [ ] Child-friendly learning features
+- [ ] Responsive design for mobile/tablet
+- [ ] Search interface with filters
+- [ ] Bookmarks management UI
+- [ ] Reading progress visualization
+
+### **Phase 4: Advanced Features** 📅 (PLANNED)
+- [ ] Audio recitation playback (verse-by-verse)
+- [ ] Advanced search filters (Meccan/Medinan, Juz range)
+- [ ] Multiple translation support (English, French)
+- [ ] Verse highlighting on scanned pages
+- [ ] Analytics dashboard (popular verses, search queries)
+- [ ] Mobile apps (iOS/Android)
+
+### **Phase 5: Production Launch** 📅 (FUTURE)
+- [ ] Comprehensive testing (unit + E2E)
+- [ ] Performance optimization
+- [ ] Database migrations for production
+- [ ] CI/CD pipeline setup
+- [ ] Cloud deployment (AWS/Vercel/Railway)
+- [ ] Public release
+
+---
+
+## 🎯 Development Guidelines
+
+- Follow NestJS best practices and clean architecture
+- Maintain TypeScript strict mode for type safety
+- Add comprehensive Swagger documentation
+- Ensure Quranic content accuracy and integrity
+- Test thoroughly before deployment
+- Handle Arabic/Urdu text encoding properly (UTF-8)
+- Implement proper error handling and validation
+- Use pagination for all list endpoints
+- Optimize database queries with proper indexing
+
+---
+
+## 📄 License & Usage
+
+**License:** MIT License for codebase  
+**Content:** Quranic content is sacred and protected
+
+### **Usage Guidelines:**
+
+**Allowed:**
+- ✅ Personal, educational, and non-commercial use
+- ✅ Integration into Islamic apps and websites
+- ✅ Modification of code (not Quranic content)
+- ✅ Learning and studying the implementation
+
+**Not Allowed:**
+- ❌ Modifying or misrepresenting Quranic text
+- ❌ Removing attribution from Quranic content
+- ❌ Commercial use without proper licensing
+- ❌ Using translations without crediting original authors
+
+### **Content Integrity:**
+All Quranic verses, translations, and tafseer are verified for accuracy. Any errors should be reported immediately via GitHub issues.
+
+**Disclaimer:** This API provides Quranic content as-is. Users should consult qualified Islamic scholars for authoritative religious guidance.
+
+---
+
+## 👤 Developer
+
+**Saad Amir** - Backend Engineer
+
+- 🔗 GitHub: [@saadamir1](https://github.com/saadamir1)
+- 💼 LinkedIn: [linkedin.com/in/saadamir](https://linkedin.com/in/saadamir)
+- 📧 Email: Saadamir070@gmail.com
+- 📍 Location: Islamabad, Pakistan
+
+### **Tech Stack Expertise:**
+- Backend: NestJS, Node.js, TypeScript, REST/GraphQL APIs
+- Database: PostgreSQL, MongoDB, TypeORM, Mongoose
+- Architecture: Multi-tenant SaaS, Microservices, Event-Driven Systems
+- DevOps: Docker, Kubernetes, CI/CD, AWS/Azure
+
+**Portfolio:** This project demonstrates production-grade API development with enterprise patterns, comprehensive documentation, and scalable architecture suitable for serving millions of users.
+
+---
+
+## 🙏 Acknowledgments
+
+**Technical Stack:**
+- NestJS team for the excellent framework
+- TypeORM for robust database integration
+- PostgreSQL community for reliable database solutions
+- Open source contributors worldwide
+
+**Content & Resources:**
+- Islamic scholars who verified translations and tafseer accuracy
+- Quran API projects that inspired this work
+- Muslim community for feedback and suggestions
+
+**Development Support:**
+- Cloudinary for CDN infrastructure
+- Swagger/OpenAPI for API documentation standards
+
+---
+
+**Built to serve the Muslim community with accurate, accessible Quranic content.**
+
+*"Read in the name of your Lord who created" - Quran 96:1*
+
+---
+
+**⭐ Star this repo if you find it helpful** | **🐛 Report Issues** | **🤝 Contributions Welcome**
