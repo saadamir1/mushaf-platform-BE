@@ -22,6 +22,10 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
+import { LoginDto } from './dto/login.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -104,17 +108,8 @@ export class AuthController {
     },
   })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        email: { type: 'string', example: 'admin@gmail.com' },
-        password: { type: 'string', example: 'admin' },
-      },
-    },
-  })
-  async login(@Body() body: { email: string; password: string }) {
-    const tokens = await this.authService.login(body.email, body.password);
+  async login(@Body() dto: LoginDto) {
+    const tokens = await this.authService.login(dto.email, dto.password);
     return tokens;
   }
 
@@ -123,19 +118,8 @@ export class AuthController {
   @ApiOperation({ summary: 'Refresh access token' })
   @ApiResponse({ status: 201, description: 'Token refreshed successfully' })
   @ApiResponse({ status: 403, description: 'Invalid refresh token' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        refreshToken: { type: 'string', example: 'your-refresh-token-here' },
-      },
-    },
-  })
-  async refresh(@Body() body: { refreshToken: string }) {
-    if (!body.refreshToken) {
-      throw new ForbiddenException('Missing refresh token');
-    }
-    return this.authService.refresh(body.refreshToken);
+  async refresh(@Body() dto: RefreshTokenDto) {
+    return this.authService.refresh(dto.refreshToken);
   }
 
   @Get('me')
@@ -218,48 +202,23 @@ export class AuthController {
   @Post('forgot-password')
   @ApiOperation({ summary: 'Request password reset' })
   @ApiResponse({ status: 201, description: 'Reset email sent if user exists' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        email: { type: 'string', example: 'user@example.com' },
-      },
-    },
-  })
-  async forgotPassword(@Body() body: { email: string }) {
-    return this.authService.forgotPassword(body.email);
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto.email);
   }
 
   @Post('reset-password')
   @ApiOperation({ summary: 'Reset password with token' })
   @ApiResponse({ status: 201, description: 'Password reset successfully' })
   @ApiResponse({ status: 400, description: 'Invalid or expired token' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        token: { type: 'string', example: 'reset-token-here' },
-        newPassword: { type: 'string', example: 'newSecurePassword123' },
-      },
-    },
-  })
-  async resetPassword(@Body() body: { token: string; newPassword: string }) {
-    return this.authService.resetPassword(body.token, body.newPassword);
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto.token, dto.newPassword);
   }
 
   @Post('send-verification')
   @ApiOperation({ summary: 'Send email verification' })
   @ApiResponse({ status: 201, description: 'Verification email sent' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        email: { type: 'string', example: 'user@example.com' },
-      },
-    },
-  })
-  async sendEmailVerification(@Body() body: { email: string }) {
-    return this.authService.sendEmailVerification(body.email);
+  async sendEmailVerification(@Body() dto: ForgotPasswordDto) {
+    return this.authService.sendEmailVerification(dto.email);
   }
 
   @Post('verify-email')
