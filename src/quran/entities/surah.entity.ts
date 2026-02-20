@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, Unique } from 'typeorm';
 import { Verse } from './verse.entity';
 
 @Entity('surahs')
+@Unique(['surahNumber'])
 export class Surah {
   @PrimaryGeneratedColumn()
   id: number;

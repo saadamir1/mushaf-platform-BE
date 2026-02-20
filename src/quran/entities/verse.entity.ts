@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, Index, Unique } from 'typeorm';
 import { Surah } from './surah.entity';
 
 @Entity('verses')
 @Index(['surahId', 'verseNumber'])
+@Unique(['surahId', 'verseNumber'])
 export class Verse {
   @PrimaryGeneratedColumn()
   id: number;
