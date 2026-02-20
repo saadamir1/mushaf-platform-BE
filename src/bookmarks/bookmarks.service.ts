@@ -86,20 +86,23 @@ export class BookmarksService {
       where: { userId },
     });
 
+    // Calculate completion percentage (total verses in Quran = 6236)
+    const TOTAL_VERSES = 6236;
+    const completionPercentage = Math.min(Math.floor((verseId / TOTAL_VERSES) * 100), 100);
+
     if (!progress) {
       progress = this.progressRepository.create({
         userId,
         lastVerseId: verseId,
         lastSurahNumber: surahNumber,
         lastPageNumber: pageNumber,
-        completionPercentage: 0,
+        completionPercentage,
       });
     } else {
       progress.lastVerseId = verseId;
       if (surahNumber) progress.lastSurahNumber = surahNumber;
       if (pageNumber) progress.lastPageNumber = pageNumber;
-      // TODO: Calculate completion percentage based on total verses (6236)
-      // progress.completionPercentage = Math.floor((verseId / 6236) * 100);
+      progress.completionPercentage = completionPercentage;
     }
 
     return await this.progressRepository.save(progress);
