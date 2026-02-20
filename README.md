@@ -215,16 +215,17 @@ POST   /auth/reset-password       # Reset password
 ```
 mushaf-platform-BE/
 ├── src/
-│   ├── auth/              # JWT authentication
+│   ├── auth/              # JWT authentication + DTOs
 │   ├── users/             # User management
 │   ├── quran/             # Main Quran module
 │   │   ├── entities/      # Surah, Verse, Page, Juz entities
-│   │   ├── surahs/        # Surah CRUD operations
+│   │   ├── surahs/        # Surah CRUD operations (cached)
 │   │   ├── verses/        # Verse queries, search, filters
-│   │   ├── juz/           # Juz navigation
-│   │   ├── pages/         # Page management
-│   │   └── search/        # Full-text search service
-│   ├── bookmarks/         # User bookmarks & reading progress
+│   │   ├── juz/           # Juz navigation (cached)
+│   │   ├── pages/         # Page management (cached)
+│   │   └── search/        # Search service with sanitization
+│   ├── bookmarks/         # User bookmarks & reading progress + DTOs
+│   ├── cache/             # In-memory cache module
 │   ├── upload/            # Cloudinary integration
 │   ├── common/            # Guards, services, middleware
 │   │   ├── decorators/    # Custom decorators
@@ -233,9 +234,11 @@ mushaf-platform-BE/
 │   │   ├── guards/        # Authorization
 │   │   ├── middleware/    # Logging
 │   │   └── services/      # Shared services
-│   ├── migrations/        # Database migrations
+│   ├── migrations/        # Database migrations (for production)
 │   └── scripts/           # Seed and data import scripts
 ├── .env                   # Environment variables
+├── CHANGELOG.md           # Recent improvements log
+├── REDIS_SETUP.md         # Redis caching guide (optional)
 ├── package.json
 └── README.md
 ```
@@ -251,9 +254,12 @@ npm run build              # Build for production
 
 # Database
 npm run seed               # Import sample data
-npm run migration:run      # Run database migrations
 npm run migration:generate # Generate migration from entity changes
+npm run migration:run      # Run database migrations
 npm run migration:revert   # Revert last migration
+
+# Note: Keep synchronize:true during development
+# Generate migrations only before production deployment
 
 # Testing
 npm test                   # Run unit tests
@@ -364,11 +370,14 @@ Authorization: Bearer YOUR_ACCESS_TOKEN
 ## 📈 Roadmap
 
 ### **Phase 1: Backend Foundation** ✅ (COMPLETED)
-- [x] Database schema and entities
+- [x] Database schema and entities with unique constraints
 - [x] Core CRUD APIs (Surahs, Verses, Juz, Pages)
-- [x] Search functionality
-- [x] User authentication
-- [x] Bookmarks and reading progress
+- [x] Search functionality with input sanitization
+- [x] User authentication with JWT (environment-based secrets)
+- [x] Bookmarks and reading progress with percentage calculation
+- [x] Request validation with DTOs
+- [x] In-memory caching for static data
+- [x] Pagination support
 - [x] API documentation (Swagger)
 
 ### **Phase 2: Data Integration** ⏳ (IN PROGRESS)
