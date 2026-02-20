@@ -22,10 +22,31 @@ export class SurahsService {
     });
   }
 
-  async findByNumberWithVerses(surahNumber: number) {
-    return await this.surahRepository.findOne({
+  async findByNumberWithVerses(surahNumber: number, page = 1, limit = 50) {
+    const surah = await this.surahRepository.findOne({
       where: { surahNumber },
-      relations: ['verses'],
     });
+
+    if (!surah) return null;
+
+    const [verses, total] = await this.surahRepository
+      .createQueryBuilder('surah')
+      .leftJoinAndSelect('surah.verses', 'verse')
+      .where('surah.surahNumber = :surahNumber', { surahNumber })
+      .orderBy('verse.verseNumber', 'ASC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      ...surah,
+      verses: verses[0]?.verses || [],
+      pagination: {
+        total,
+        page,
+        limit,
+        lastPage: Math.ceil(total / limit),
+      },
+    };
   }
 }

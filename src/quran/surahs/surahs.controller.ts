@@ -1,5 +1,5 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Param, ParseIntPipe, Query, DefaultValuePipe } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { SurahsService } from './surahs.service';
 
 @ApiTags('Quran - Surahs')
@@ -20,8 +20,14 @@ export class SurahsController {
   }
 
   @Get(':number/verses')
-  @ApiOperation({ summary: 'Get Surah with verses' })
-  async getSurahWithVerses(@Param('number', ParseIntPipe) number: number) {
-    return await this.surahsService.findByNumberWithVerses(number);
+  @ApiOperation({ summary: 'Get Surah with verses (paginated)' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 50 })
+  async getSurahWithVerses(
+    @Param('number', ParseIntPipe) number: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(50), ParseIntPipe) limit: number,
+  ) {
+    return await this.surahsService.findByNumberWithVerses(number, page, limit);
   }
 }
