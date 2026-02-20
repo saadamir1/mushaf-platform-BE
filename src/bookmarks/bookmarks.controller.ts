@@ -15,6 +15,9 @@ import {
 import { ApiTags, ApiOperation, ApiQuery, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { BookmarksService } from './bookmarks.service';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateBookmarkDto } from './dto/create-bookmark.dto';
+import { UpdateBookmarkNoteDto } from './dto/update-bookmark-note.dto';
+import { UpdateReadingProgressDto } from './dto/update-reading-progress.dto';
 
 @ApiTags('Bookmarks & Reading Progress')
 @ApiBearerAuth()
@@ -28,10 +31,9 @@ export class BookmarksController {
   @ApiOperation({ summary: 'Create a bookmark' })
   async createBookmark(
     @Request() req,
-    @Body('verseId', ParseIntPipe) verseId: number,
-    @Body('note') note?: string,
+    @Body() dto: CreateBookmarkDto,
   ) {
-    return await this.bookmarksService.createBookmark(req.user.id, verseId, note);
+    return await this.bookmarksService.createBookmark(req.user.id, dto.verseId, dto.note);
   }
 
   @Get()
@@ -62,9 +64,9 @@ export class BookmarksController {
   async updateBookmarkNote(
     @Request() req,
     @Param('id', ParseIntPipe) id: number,
-    @Body('note') note: string,
+    @Body() dto: UpdateBookmarkNoteDto,
   ) {
-    return await this.bookmarksService.updateBookmarkNote(req.user.id, id, note);
+    return await this.bookmarksService.updateBookmarkNote(req.user.id, id, dto.note);
   }
 
   // Reading Progress
@@ -72,15 +74,13 @@ export class BookmarksController {
   @ApiOperation({ summary: 'Update reading progress' })
   async updateProgress(
     @Request() req,
-    @Body('verseId', ParseIntPipe) verseId: number,
-    @Body('surahNumber') surahNumber?: number,
-    @Body('pageNumber') pageNumber?: number,
+    @Body() dto: UpdateReadingProgressDto,
   ) {
     return await this.bookmarksService.updateReadingProgress(
       req.user.id,
-      verseId,
-      surahNumber,
-      pageNumber,
+      dto.verseId,
+      dto.surahNumber,
+      dto.pageNumber,
     );
   }
 
