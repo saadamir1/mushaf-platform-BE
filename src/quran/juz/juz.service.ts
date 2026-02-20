@@ -2,21 +2,35 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Juz } from '../entities/juz.entity';
+import { Inject } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class JuzService {
   constructor(
     @InjectRepository(Juz)
     private juzRepository: Repository<Juz>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async findAll() {
-    return await this.juzRepository.find({
+    const cacheKey = 'juz:all';
+    const cached = await this.cacheManager.get(cacheKey);
+    if (cached) return cached;
+
+    const juz = await this.juzRepository.find({
       order: { juzNumber: 'ASC' },
     });
+    await this.cacheManager.set(cacheKey, juz);
+    return juz;
   }
 
   async findByNumber(juzNumber: number) {
+    const cacheKey = `juz:${juzNumber}`;
+    const cached = await this.cacheManager.get(cacheKey);
+    if (cached) return cached;
+
     const juz = await this.juzRepository.findOne({
       where: { juzNumber },
     });
@@ -25,6 +39,7 @@ export class JuzService {
       throw new NotFoundException(`Juz ${juzNumber} not found`);
     }
 
+    await this.cacheManager.set(cacheKey, juz);
     return juz;
   }
 

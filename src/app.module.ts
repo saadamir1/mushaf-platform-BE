@@ -13,10 +13,12 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { AuditLog } from './common/entities/audit-log.entity';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { QuranModule } from './quran/quran.module';
+import { AppCacheModule } from './cache/cache.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    AppCacheModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',

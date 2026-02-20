@@ -2,12 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { QuranPage } from '../entities/page.entity';
+import { Inject } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class PagesService {
   constructor(
     @InjectRepository(QuranPage)
     private pageRepository: Repository<QuranPage>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async findAll(page = 1, limit = 20) {
@@ -27,6 +31,10 @@ export class PagesService {
   }
 
   async findByNumber(pageNumber: number) {
+    const cacheKey = `page:${pageNumber}`;
+    const cached = await this.cacheManager.get(cacheKey);
+    if (cached) return cached;
+
     const page = await this.pageRepository.findOne({
       where: { pageNumber },
     });
@@ -35,6 +43,7 @@ export class PagesService {
       throw new NotFoundException(`Page ${pageNumber} not found`);
     }
 
+    await this.cacheManager.set(cacheKey, page);
     return page;
   }
 
@@ -58,7 +67,7 @@ export class PagesService {
 
   // For future when Cloudinary images are uploaded
   async updatePageImage(pageNumber: number, imageUrl: string) {
-    const page = await this.findByNumber(pageNumber);
+    const page = (await this.findByNumber(pageNumber)) as QuranPage;
     page.imageUrl = imageUrl;
     return await this.pageRepository.save(page);
   }
