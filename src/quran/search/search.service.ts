@@ -23,12 +23,15 @@ export class SearchService {
       };
     }
 
+    // Sanitize input to prevent SQL injection
+    const sanitizedQuery = query.replace(/[%_]/g, '\\$&');
+
     const verses = await this.verseRepository
       .createQueryBuilder('verse')
       .leftJoinAndSelect('verse.surah', 'surah')
-      .where('verse.textArabic LIKE :query', { query: `%${query}%` })
-      .orWhere('verse.textUrdu LIKE :query', { query: `%${query}%` })
-      .orWhere('verse.tafseerUrdu LIKE :query', { query: `%${query}%` })
+      .where('verse.textArabic ILIKE :query', { query: `%${sanitizedQuery}%` })
+      .orWhere('verse.textUrdu ILIKE :query', { query: `%${sanitizedQuery}%` })
+      .orWhere('verse.tafseerUrdu ILIKE :query', { query: `%${sanitizedQuery}%` })
       .orderBy('verse.surahId', 'ASC')
       .addOrderBy('verse.verseNumber', 'ASC')
       .limit(limit)
@@ -51,12 +54,15 @@ export class SearchService {
       };
     }
 
+    // Sanitize input
+    const sanitizedQuery = query.replace(/[%_]/g, '\\$&');
+
     const surahs = await this.surahRepository
       .createQueryBuilder('surah')
-      .where('surah.nameArabic LIKE :query', { query: `%${query}%` })
-      .orWhere('surah.nameEnglish LIKE :query', { query: `%${query}%` })
-      .orWhere('surah.nameUrdu LIKE :query', { query: `%${query}%` })
-      .orWhere('surah.descriptionUrdu LIKE :query', { query: `%${query}%` })
+      .where('surah.nameArabic ILIKE :query', { query: `%${sanitizedQuery}%` })
+      .orWhere('surah.nameEnglish ILIKE :query', { query: `%${sanitizedQuery}%` })
+      .orWhere('surah.nameUrdu ILIKE :query', { query: `%${sanitizedQuery}%` })
+      .orWhere('surah.descriptionUrdu ILIKE :query', { query: `%${sanitizedQuery}%` })
       .orderBy('surah.surahNumber', 'ASC')
       .getMany();
 
