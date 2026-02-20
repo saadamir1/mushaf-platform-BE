@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { EmailService } from '../common/services/email.service';
@@ -18,6 +19,7 @@ export class AuthService {
     private jwtService: JwtService,
     private emailService: EmailService,
     private auditService: AuditService,
+    private configService: ConfigService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -31,10 +33,12 @@ export class AuthService {
 
   async generateTokens(user: any) {
     const payload = { email: user.email, sub: user.id, role: user.role };
-    const access_token = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const access_token = this.jwtService.sign(payload, { 
+      expiresIn: this.configService.get<string>('JWT_EXPIRES_IN', '15m') 
+    });
     const refresh_token = this.jwtService.sign(payload, {
-      secret: 'refresh-secret',
-      expiresIn: '7d',
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d'),
     });
     return { access_token, refresh_token };
   }
@@ -76,7 +80,7 @@ export class AuthService {
   async refresh(incomingRefreshToken: string) {
     try {
       const payload = this.jwtService.verify(incomingRefreshToken, {
-        secret: 'refresh-secret', // same secret used for refresh token generation
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       });
 
       const user = await this.usersService.findOne(payload.sub);
