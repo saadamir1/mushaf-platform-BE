@@ -7,15 +7,10 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      // Extract token from Authorization header
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      // Reject expired tokens
       ignoreExpiration: false,
-      // Secret key used to verify JWT
-      secretOrKey: 'jwt-secret-key',
+      secretOrKey: process.env.JWT_SECRET || 'jwt-secret-key',
     });
-
-    // Token extraction and verification logic is handled by Passport (via super constructor)
   }
 
   // Called automatically after token is successfully verified
