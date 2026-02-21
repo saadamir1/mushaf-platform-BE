@@ -8,20 +8,14 @@ export class QuranPage {
   @Column({ type: 'int', unique: true })
   pageNumber: number;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   imageUrl: string;
 
-  @Column({ type: 'int', nullable: true })
-  startVerseId: number;
+  @Column({ type: 'varchar' })
+  startVerse: string;  // Format: "surahNumber:verseNumber" e.g. "1:1"
 
-  @Column({ type: 'int', nullable: true })
-  endVerseId: number;
-
-  @Column({ type: 'int', nullable: true })
-  startSurahNumber: number;
-
-  @Column({ type: 'int', nullable: true })
-  endSurahNumber: number;
+  @Column({ type: 'varchar' })
+  endVerse: string;    // Format: "surahNumber:verseNumber" e.g. "1:7"
 
   @CreateDateColumn()
   createdAt: Date;

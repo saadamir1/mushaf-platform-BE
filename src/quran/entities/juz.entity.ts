@@ -8,17 +8,11 @@ export class Juz {
   @Column({ type: 'int', unique: true })  
   juzNumber: number;
 
-  @Column({ type: 'int' })  
-  startVerseId: number;
+  @Column({ type: 'varchar' })
+  startVerse: string;  // Format: "surahNumber:verseNumber" e.g. "1:1"
 
-  @Column({ type: 'int' })  
-  endVerseId: number;
-
-  @Column({ type: 'int' })  
-  startSurahNumber: number;
-
-  @Column({ type: 'int' })  
-  endSurahNumber: number;
+  @Column({ type: 'varchar' })
+  endVerse: string;    // Format: "surahNumber:verseNumber" e.g. "2:141"
 
   @CreateDateColumn()
   createdAt: Date;

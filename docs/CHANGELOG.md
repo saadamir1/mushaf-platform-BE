@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - 2025-01-21
+## [Unreleased] - 2026-02-20
 
 ### Security
 - Fixed hardcoded JWT secrets - now using environment variables via ConfigService

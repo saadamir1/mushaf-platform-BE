@@ -20,6 +20,9 @@ export class Verse {
   @Column({ type: 'text' })
   textUrdu: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  transliteration: string;
+
   @Column({ type: 'text', nullable: true })
   tafseerUrdu: string;
 
@@ -28,6 +31,12 @@ export class Verse {
 
   @Column({ type: 'int', nullable: true })  
   juzNumber: number;
+
+  @Column({ type: 'enum', enum: ['recommended', 'obligatory'], nullable: true })
+  sajdahType: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  audioUrl: string;
 
   @ManyToOne(() => Surah, surah => surah.verses)
   @JoinColumn({ name: 'surahId' })
