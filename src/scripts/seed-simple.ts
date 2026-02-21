@@ -17,9 +17,10 @@ const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME || 'mushaf_admin',
   password: process.env.DB_PASSWORD || 'secret',
   database: process.env.DB_NAME || 'mushaf_platform_db',
-  entities: [Surah, Verse, Juz], // Only the entities we use
-  synchronize: false,
-  logging: false, // Set to true for debugging
+  entities: [Surah, Verse, Juz],
+  synchronize: true,
+  dropSchema: true,
+  logging: false,
 });
 
 async function seed() {
@@ -33,13 +34,6 @@ async function seed() {
     const juzRepo = AppDataSource.getRepository(Juz);
 
     console.log('🌱 Seeding sample data...\n');
-
-    // Clear existing data
-    // console.log('🗑️  Clearing existing data...');
-    // await verseRepo.clear();
-    // await juzRepo.clear();
-    // await surahRepo.clear();
-    // console.log('✅ Cleared\n');
 
     // Seed Surahs
     console.log('📖 Creating Surahs...');
@@ -113,10 +107,8 @@ async function seed() {
     console.log('📚 Creating Juz...');
     await juzRepo.save({
       juzNumber: 1,
-      startVerseId: verses[0].id,
-      endVerseId: 148,
-      startSurahNumber: 1,
-      endSurahNumber: 2,
+      startVerse: '1:1',
+      endVerse: '2:141',
     });
 
     console.log('✅ Created Juz 1\n');

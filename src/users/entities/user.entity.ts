@@ -6,6 +6,7 @@ export class User {
   id: number;
 
   @Column({
+    type: 'varchar',
     name: 'email',
     nullable: false,
     default: '',
@@ -13,24 +14,27 @@ export class User {
   email: string;
 
   @Column({
+    type: 'varchar',
     nullable: false,
     default: '',
   })
   password: string;
 
   @Column({
+    type: 'varchar',
     nullable: false,
     default: '',
   })
   firstName: string;
 
   @Column({
+    type: 'varchar',
     nullable: false,
     default: '',
   })
   lastName: string;
 
-  @Column({ default: 'user' })
+  @Column({ type: 'varchar', default: 'user' })
   role: 'user' | 'admin';
 
   @Column({ type: 'text', nullable: true })

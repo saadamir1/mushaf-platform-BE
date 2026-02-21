@@ -24,7 +24,8 @@
     "migration:run": "typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/data-source.ts",
     "migration:show": "typeorm-ts-node-commonjs migration:show -d src/data-source.ts",
-    "seed": "tsx src/scripts/seed-simple.ts"
+    "seed": "tsx src/scripts/seed-simple.ts",
+    "update-password": "tsx src/scripts/update-admin-password.ts"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^3.1.0",
@@ -82,6 +83,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },

@@ -32,17 +32,17 @@ export class UpdateProfileDto {
 
 export class ChangePasswordDto {
   @ApiProperty({
-    example: 'currentPassword123',
+    example: 'Admin@123',
     description: 'Current password',
   })
-  @IsString()
+  @IsString({ message: 'Current password must be a string' })
   currentPassword: string;
 
   @ApiProperty({
-    example: 'newPassword123',
+    example: 'NewPassword@123',
     description: 'New password (min 8 characters)',
   })
-  @IsString()
+  @IsString({ message: 'New password must be a string' })
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
   newPassword: string;
 }
