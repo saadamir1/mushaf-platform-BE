@@ -133,8 +133,7 @@ export class AuthService {
     newPassword: string,
   ): Promise<{ message: string }> {
     // Find user by reset token
-    const users = await this.usersService.findAll();
-    const user = users.data.find((u) => u.resetPasswordToken === token);
+    const user = await this.usersService.findByResetPasswordToken(token);
 
     if (
       !user ||
@@ -194,8 +193,7 @@ export class AuthService {
 
   async verifyEmail(token: string): Promise<{ message: string }> {
     // Find user by verification token
-    const users = await this.usersService.findAll();
-    const user = users.data.find((u) => u.emailVerificationToken === token);
+    const user = await this.usersService.findByEmailVerificationToken(token);
 
     if (
       !user ||

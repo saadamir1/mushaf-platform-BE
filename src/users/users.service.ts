@@ -63,6 +63,14 @@ export class UsersService {
     return this.userRepository.find({ where: { role } });
   }
 
+  async findByEmailVerificationToken(token: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { emailVerificationToken: token } });
+  }
+
+  async findByResetPasswordToken(token: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { resetPasswordToken: token } });
+  }
+
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const user = this.userRepository.create({
