@@ -25,6 +25,8 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // ============ PUBLIC ROUTES (no :id parameter) ============
+  
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Get()
@@ -32,16 +34,8 @@ export class UsersController {
     return this.usersService.findAll(+page, +limit);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
-  }
-
+  // ============ PROFILE ROUTES (specific, no :id) ============
+  
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Req() req) {
@@ -51,15 +45,6 @@ export class UsersController {
     }
     const { password, refreshToken, ...userProfile } = user;
     return userProfile;
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const user = await this.usersService.findOne(+id);
-    if (!user) {
-      throw new NotFoundException(`User with id ${id} not found`);
-    }
-    return user;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -85,5 +70,26 @@ export class UsersController {
     } catch (error) {
       throw error;
     }
+  }
+
+  // ============ PARAMETERIZED ROUTES (must be last) ============
+  
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const user = await this.usersService.findOne(+id);
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+    return user;
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(+id, updateUserDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(+id);
   }
 }
