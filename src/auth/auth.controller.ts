@@ -5,15 +5,11 @@ import {
   UnauthorizedException,
   Get,
   UseGuards,
-  Req,
-  ForbiddenException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
 import {
   ApiTags,
   ApiOperation,
@@ -26,6 +22,7 @@ import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { PublicRegisterDto } from './dto/public-register.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -36,50 +33,25 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Register new user (Admin only)' })
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts per minute
+  @ApiOperation({ summary: 'Register new user' })
   @ApiResponse({ status: 201, description: 'User successfully registered' })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - Admin access required',
-  })
   @ApiResponse({ status: 409, description: 'Email already exists' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        firstName: { type: 'string', example: 'John' },
-        lastName: { type: 'string', example: 'Doe' },
-        email: { type: 'string', example: 'john@example.com' },
-        password: { type: 'string', example: 'securePassword123' },
-      },
-    },
-  })
-  async register(
-    @Body()
-    body: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-    },
-  ) {
-    const userExists = await this.usersService.findByEmail(body.email);
+  async register(@Body() dto: PublicRegisterDto) {
+    const userExists = await this.usersService.findByEmail(dto.email);
     if (userExists) {
       throw new UnauthorizedException('Email already in use');
     }
 
     const user = await this.usersService.create({
-      firstName: body.firstName,
-      lastName: body.lastName,
-      email: body.email,
-      password: body.password,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      email: dto.email,
+      password: dto.password,
     });
 
     // Send verification email
-    await this.authService.sendEmailVerification(body.email);
+    await this.authService.sendEmailVerification(dto.email);
 
     return {
       message:

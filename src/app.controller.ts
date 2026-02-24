@@ -23,7 +23,7 @@ export class AppController {
   })
   getHealth() {
     return {
-      message: 'NestJS CRUD API is running!',
+      message: 'Mushaf API is running!',
       timestamp: new Date().toISOString(),
       status: 'healthy',
     };
