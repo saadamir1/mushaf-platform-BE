@@ -33,7 +33,7 @@ export class BookmarksController {
     @Request() req,
     @Body() dto: CreateBookmarkDto,
   ) {
-    return await this.bookmarksService.createBookmark(req.user.id, dto.verseId, dto.note);
+    return await this.bookmarksService.createBookmark(req.user.userId, dto.verseId, dto.note);
   }
 
   @Get()
@@ -45,7 +45,14 @@ export class BookmarksController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
   ) {
-    return await this.bookmarksService.getUserBookmarks(req.user.id, page, limit);
+    return await this.bookmarksService.getUserBookmarks(req.user.userId, page, limit);
+  }
+
+  @Get('verse-ids')
+  @ApiOperation({ summary: 'Get all bookmarked verse IDs for current user' })
+  async getBookmarkedVerseIds(@Request() req) {
+    const verseIds = await this.bookmarksService.getBookmarkedVerseIds(req.user.userId);
+    return { verseIds };
   }
 
   @Delete(':id')
@@ -55,7 +62,7 @@ export class BookmarksController {
     @Request() req,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    return await this.bookmarksService.deleteBookmark(req.user.id, id);
+    return await this.bookmarksService.deleteBookmark(req.user.userId, id);
   }
 
   @Patch(':id/note')
@@ -66,7 +73,7 @@ export class BookmarksController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateBookmarkNoteDto,
   ) {
-    return await this.bookmarksService.updateBookmarkNote(req.user.id, id, dto.note);
+    return await this.bookmarksService.updateBookmarkNote(req.user.userId, id, dto.note);
   }
 
   // Reading Progress
@@ -77,7 +84,7 @@ export class BookmarksController {
     @Body() dto: UpdateReadingProgressDto,
   ) {
     return await this.bookmarksService.updateReadingProgress(
-      req.user.id,
+      req.user.userId,
       dto.verseId,
       dto.surahNumber,
       dto.pageNumber,
@@ -87,12 +94,12 @@ export class BookmarksController {
   @Get('progress')
   @ApiOperation({ summary: 'Get reading progress' })
   async getProgress(@Request() req) {
-    return await this.bookmarksService.getReadingProgress(req.user.id);
+    return await this.bookmarksService.getReadingProgress(req.user.userId);
   }
 
   @Delete('progress')
   @ApiOperation({ summary: 'Reset reading progress' })
   async resetProgress(@Request() req) {
-    return await this.bookmarksService.resetReadingProgress(req.user.id);
+    return await this.bookmarksService.resetReadingProgress(req.user.userId);
   }
 }

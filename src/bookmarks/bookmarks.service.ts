@@ -35,6 +35,7 @@ export class BookmarksService {
   async getUserBookmarks(userId: number, page = 1, limit = 20) {
     const [data, total] = await this.bookmarkRepository.findAndCount({
       where: { userId },
+      relations: ['verse', 'verse.surah'],
       order: { createdAt: 'DESC' },
       skip: (page - 1) * limit,
       take: limit,
@@ -47,6 +48,14 @@ export class BookmarksService {
       limit,
       lastPage: Math.ceil(total / limit),
     };
+  }
+
+  async getBookmarkedVerseIds(userId: number) {
+    const bookmarks = await this.bookmarkRepository.find({
+      where: { userId },
+      select: ['verseId'],
+    });
+    return bookmarks.map(b => b.verseId);
   }
 
   async deleteBookmark(userId: number, bookmarkId: number) {
