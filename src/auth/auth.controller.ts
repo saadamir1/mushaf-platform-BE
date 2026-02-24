@@ -50,8 +50,13 @@ export class AuthController {
       password: dto.password,
     });
 
-    // Send verification email
-    await this.authService.sendEmailVerification(dto.email);
+    // Send verification email (don't fail registration if email fails)
+    try {
+      await this.authService.sendEmailVerification(dto.email);
+    } catch (error) {
+      // Log the error but don't fail registration
+      console.error('Failed to send verification email:', error);
+    }
 
     return {
       message:
