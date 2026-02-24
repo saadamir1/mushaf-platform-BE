@@ -34,10 +34,32 @@ export class EmailService {
   }
 
   private compileTemplates(): void {
-    const templatesDir = path.join(__dirname, '..', 'templates', 'email');
+    // Try multiple possible paths for templates directory
+    const possiblePaths = [
+      path.join(__dirname, '..', 'templates', 'email'),
+      path.join(process.cwd(), 'src', 'common', 'templates', 'email'),
+    ];
+    
+    let templatesDir = '';
+    
+    // Find the first existing directory
+    for (const dir of possiblePaths) {
+      if (fs.existsSync(dir)) {
+        templatesDir = dir;
+        break;
+      }
+    }
+    
+    if (!templatesDir) {
+      console.error('Email templates directory not found. Tried:', possiblePaths);
+      return;
+    }
+    
+    console.log('Loading email templates from:', templatesDir);
     
     try {
       const files = fs.readdirSync(templatesDir);
+      console.log('Found template files:', files);
       
       files.forEach(file => {
         if (file.endsWith('.hbs')) {
@@ -51,6 +73,8 @@ export class EmailService {
           console.log(`✓ Compiled email template: ${templateName}`);
         }
       });
+      
+      console.log('Loaded templates:', Array.from(this.templates.keys()));
     } catch (error) {
       console.error('Failed to compile email templates:', error);
     }
@@ -60,6 +84,7 @@ export class EmailService {
     const template = this.templates.get(templateName);
     
     if (!template) {
+      console.error('Available templates:', Array.from(this.templates.keys()));
       throw new Error(`Template not found: ${templateName}`);
     }
     
