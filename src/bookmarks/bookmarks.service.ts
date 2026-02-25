@@ -140,4 +140,15 @@ export class BookmarksService {
 
     return { message: 'Reading progress reset successfully' };
   }
+
+  // Delete all user data (for account deletion)
+  async deleteAllUserData(userId: number) {
+    // Delete all bookmarks
+    await this.bookmarkRepository.delete({ userId });
+    
+    // Delete reading progress
+    await this.progressRepository.delete({ userId });
+    
+    return { message: 'All user data deleted successfully' };
+  }
 }
