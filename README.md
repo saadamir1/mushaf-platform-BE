@@ -6,6 +6,21 @@
 
 A comprehensive, production-ready REST API for delivering digital Quran content with Urdu translations, tafseer, search capabilities, and user personalization features.
 
+> **💡 Foundation App:** This backend includes complete authentication system with JWT tokens, refresh tokens, email verification, password reset, role-based access control, and admin APIs. It's designed to be easily adapted for other projects - just remove the Quran-specific modules and keep the auth foundation!
+
+## 🔧 Foundation Features (Reusable)
+- JWT Authentication with Access & Refresh Tokens
+- User Registration & Login
+- Email Verification with Token Expiry
+- Password Reset via Email
+- Role-Based Access Control (User/Admin)
+- User Management APIs (CRUD)
+- Profile Picture Upload (Cloudinary)
+- Audit Logging
+- Rate Limiting
+- PostgreSQL + TypeORM Setup
+- Swagger API Documentation
+
 ---
 
 ## 🎯 Project Purpose
