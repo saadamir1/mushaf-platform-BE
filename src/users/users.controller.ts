@@ -72,6 +72,16 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Delete('account')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Delete user account' })
+  @ApiResponse({ status: 200, description: 'Account deleted successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async deleteAccount(@Req() req) {
+    return this.usersService.deleteAccount(req.user.userId);
+  }
+
   // ============ PARAMETERIZED ROUTES (must be last) ============
   
   @Get(':id')

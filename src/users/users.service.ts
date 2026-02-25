@@ -5,6 +5,7 @@ import { UpdateProfileDto, ChangePasswordDto } from './dto/update-profile.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { BookmarksService } from '../bookmarks/bookmarks.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -12,6 +13,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private bookmarksService: BookmarksService,
   ) {}
 
   async findAll(page: number = 1, limit: number = 10) {
@@ -111,5 +113,20 @@ export class UsersService {
     await this.userRepository.save(user);
 
     return { message: 'Password changed successfully' };
+  }
+
+  async deleteAccount(userId: number): Promise<{ message: string }> {
+    const user = await this.findOne(userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Delete user's bookmarks and reading progress
+    await this.bookmarksService.deleteAllUserData(userId);
+    
+    // Delete the user
+    await this.userRepository.delete(userId);
+
+    return { message: 'Account deleted successfully' };
   }
 }
