@@ -14,10 +14,10 @@ export class Verse {
   @Column({ type: 'int' }) 
   verseNumber: number;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   textArabic: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   textUrdu: string;
 
   @Column({ type: 'varchar', nullable: true })

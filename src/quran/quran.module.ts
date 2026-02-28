@@ -9,6 +9,7 @@ import { VersesModule } from './verses/verses.module';
 import { PagesModule } from './pages/pages.module';
 import { JuzModule } from './juz/juz.module';
 import { SearchModule } from './search/search.module';
+import { TopicsModule } from './topics/topics.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SearchModule } from './search/search.module';
     PagesModule,
     JuzModule,
     SearchModule,
+    TopicsModule,
   ],
   exports: [TypeOrmModule],
 })

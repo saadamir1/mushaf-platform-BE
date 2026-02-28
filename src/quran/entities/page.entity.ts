@@ -17,6 +17,12 @@ export class QuranPage {
   @Column({ type: 'varchar' })
   endVerse: string;    // Format: "surahNumber:verseNumber" e.g. "1:7"
 
+  @Column({ type: 'int', nullable: true })
+  juzNumber: number;
+
+  @Column({ type: 'int', nullable: true })
+  surahNumberStart: number;  // if a new Surah starts on this page
+
   @CreateDateColumn()
   createdAt: Date;
 }

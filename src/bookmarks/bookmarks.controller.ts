@@ -33,7 +33,7 @@ export class BookmarksController {
     @Request() req,
     @Body() dto: CreateBookmarkDto,
   ) {
-    return await this.bookmarksService.createBookmark(req.user.userId, dto.verseId, dto.note);
+    return await this.bookmarksService.createBookmark(req.user.userId, dto.pageNumber, dto.note);
   }
 
   @Get()
@@ -48,11 +48,11 @@ export class BookmarksController {
     return await this.bookmarksService.getUserBookmarks(req.user.userId, page, limit);
   }
 
-  @Get('verse-ids')
-  @ApiOperation({ summary: 'Get all bookmarked verse IDs for current user' })
-  async getBookmarkedVerseIds(@Request() req) {
-    const verseIds = await this.bookmarksService.getBookmarkedVerseIds(req.user.userId);
-    return { verseIds };
+  @Get('page-numbers')
+  @ApiOperation({ summary: 'Get all bookmarked page numbers for current user' })
+  async getBookmarkedPageNumbers(@Request() req) {
+    const pageNumbers = await this.bookmarksService.getBookmarkedPageNumbers(req.user.userId);
+    return { pageNumbers };
   }
 
   @Delete(':id')
@@ -85,8 +85,6 @@ export class BookmarksController {
   ) {
     return await this.bookmarksService.updateReadingProgress(
       req.user.userId,
-      dto.verseId,
-      dto.surahNumber,
       dto.pageNumber,
     );
   }

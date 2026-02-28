@@ -35,4 +35,18 @@ export class PagesController {
   async getPageByNumber(@Param('number', ParseIntPipe) number: number) {
     return await this.pagesService.findByNumber(number);
   }
+
+  @Get('surah/:surahNumber')
+  @ApiOperation({ summary: 'Get page by surah start' })
+  @ApiParam({ name: 'surahNumber', type: Number, example: 1 })
+  async getPageBySurah(@Param('surahNumber', ParseIntPipe) surahNumber: number) {
+    return await this.pagesService.findBySurahStart(surahNumber);
+  }
+
+  @Get('juz/:juzNumber')
+  @ApiOperation({ summary: 'Get page by juz start' })
+  @ApiParam({ name: 'juzNumber', type: Number, example: 1 })
+  async getPageByJuz(@Param('juzNumber', ParseIntPipe) juzNumber: number) {
+    return await this.pagesService.findByJuzStart(juzNumber);
+  }
 }

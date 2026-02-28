@@ -14,18 +14,18 @@ export class BookmarksService {
   ) {}
 
   // Bookmarks
-  async createBookmark(userId: number, verseId: number, note?: string) {
+  async createBookmark(userId: number, pageNumber: number, note?: string) {
     const existing = await this.bookmarkRepository.findOne({
-      where: { userId, verseId },
+      where: { userId, pageNumber },
     });
 
     if (existing) {
-      throw new ConflictException('Bookmark already exists for this verse');
+      throw new ConflictException('Bookmark already exists for this page');
     }
 
     const bookmark = this.bookmarkRepository.create({
       userId,
-      verseId,
+      pageNumber,
       note,
     });
 
@@ -35,7 +35,6 @@ export class BookmarksService {
   async getUserBookmarks(userId: number, page = 1, limit = 20) {
     const [data, total] = await this.bookmarkRepository.findAndCount({
       where: { userId },
-      relations: ['verse', 'verse.surah'],
       order: { createdAt: 'DESC' },
       skip: (page - 1) * limit,
       take: limit,
@@ -50,12 +49,12 @@ export class BookmarksService {
     };
   }
 
-  async getBookmarkedVerseIds(userId: number) {
+  async getBookmarkedPageNumbers(userId: number) {
     const bookmarks = await this.bookmarkRepository.find({
       where: { userId },
-      select: ['verseId'],
+      select: ['pageNumber'],
     });
-    return bookmarks.map(b => b.verseId);
+    return bookmarks.map(b => b.pageNumber);
   }
 
   async deleteBookmark(userId: number, bookmarkId: number) {
@@ -87,30 +86,24 @@ export class BookmarksService {
   // Reading Progress
   async updateReadingProgress(
     userId: number,
-    verseId: number,
-    surahNumber?: number,
-    pageNumber?: number,
+    pageNumber: number,
   ) {
     let progress = await this.progressRepository.findOne({
       where: { userId },
     });
 
-    // Calculate completion percentage (total verses in Quran = 6236)
-    const TOTAL_VERSES = 6236;
-    const completionPercentage = Math.min(Math.floor((verseId / TOTAL_VERSES) * 100), 100);
+    // Calculate completion percentage (total pages in Mushaf = 604)
+    const TOTAL_PAGES = 604;
+    const completionPercentage = Math.min(Math.floor((pageNumber / TOTAL_PAGES) * 100), 100);
 
     if (!progress) {
       progress = this.progressRepository.create({
         userId,
-        lastVerseId: verseId,
-        lastSurahNumber: surahNumber,
         lastPageNumber: pageNumber,
         completionPercentage,
       });
     } else {
-      progress.lastVerseId = verseId;
-      if (surahNumber) progress.lastSurahNumber = surahNumber;
-      if (pageNumber) progress.lastPageNumber = pageNumber;
+      progress.lastPageNumber = pageNumber;
       progress.completionPercentage = completionPercentage;
     }
 

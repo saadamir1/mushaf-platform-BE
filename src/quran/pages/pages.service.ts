@@ -71,4 +71,28 @@ export class PagesService {
     page.imageUrl = imageUrl;
     return await this.pageRepository.save(page);
   }
+
+  async findBySurahStart(surahNumber: number) {
+    const page = await this.pageRepository.findOne({
+      where: { surahNumberStart: surahNumber },
+    });
+
+    if (!page) {
+      throw new NotFoundException(`No page found for Surah ${surahNumber}`);
+    }
+
+    return page;
+  }
+
+  async findByJuzStart(juzNumber: number) {
+    const page = await this.pageRepository.findOne({
+      where: { juzNumber },
+    });
+
+    if (!page) {
+      throw new NotFoundException(`No page found for Juz ${juzNumber}`);
+    }
+
+    return page;
+  }
 }

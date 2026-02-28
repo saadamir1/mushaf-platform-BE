@@ -13,6 +13,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { AuditLog } from './common/entities/audit-log.entity';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
 import { QuranModule } from './quran/quran.module';
+import { TopicsModule } from './quran/topics/topics.module';
 import { AppCacheModule } from './cache/cache.module';
 
 @Module({

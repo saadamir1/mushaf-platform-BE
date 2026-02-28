@@ -34,6 +34,9 @@ export class Surah {
   @Column({ type: 'text', nullable: true })
   descriptionUrdu: string;
 
+  @Column({ type: 'int', nullable: true })
+  startPageNumber: number;  // which PDF page this Surah starts on
+
   @OneToMany(() => Verse, verse => verse.surah)
   verses: Verse[];
 

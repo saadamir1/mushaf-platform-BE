@@ -14,6 +14,9 @@ export class Juz {
   @Column({ type: 'varchar' })
   endVerse: string;    // Format: "surahNumber:verseNumber" e.g. "2:141"
 
+  @Column({ type: 'int', nullable: true })
+  startPageNumber: number;  // which PDF page this Juz starts on
+
   @CreateDateColumn()
   createdAt: Date;
 }

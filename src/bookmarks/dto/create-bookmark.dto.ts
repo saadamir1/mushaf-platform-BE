@@ -2,11 +2,11 @@ import { IsInt, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateBookmarkDto {
-  @ApiProperty({ example: 1, description: 'Verse ID to bookmark' })
+  @ApiProperty({ example: 1, description: 'Page number to bookmark' })
   @IsInt()
-  verseId: number;
+  pageNumber: number;
 
-  @ApiPropertyOptional({ example: 'Important verse about patience', description: 'Optional note' })
+  @ApiPropertyOptional({ example: 'Important page about patience', description: 'Optional note' })
   @IsOptional()
   @IsString()
   @MaxLength(500)

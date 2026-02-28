@@ -9,13 +9,7 @@ export class ReadingProgress {
   @Column({ unique: true })
   userId: number;
 
-  @Column()
-  lastVerseId: number;
-
-  @Column({ nullable: true })
-  lastSurahNumber: number;
-
-  @Column({ nullable: true })
+  @Column({ default: 1 })
   lastPageNumber: number;
 
   @Column({ default: 0 })
