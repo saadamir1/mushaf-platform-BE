@@ -443,10 +443,7 @@ Authorization: Bearer YOUR_ACCESS_TOKEN
 
 ---
 
-## 📄 License & Usage
-
-**License:** MIT License for codebase  
-**Content:** Quranic content is sacred and protected
+## 📄 Usage
 
 ### **Usage Guidelines:**
 
