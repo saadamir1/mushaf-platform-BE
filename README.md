@@ -1,10 +1,10 @@
-# Mushaf Platform - Digital Quran Backend API
+# Mushaf Platform - Digital Quran Aziz Backend API
 
 ![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat&logo=nestjs&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
 
-A comprehensive, production-ready REST API for delivering digital Quran content with Urdu translations, tafseer, search capabilities, and user personalization features.
+A comprehensive, production-ready REST API for delivering digital Quran Aziz content with scanned pages, page-based navigation, topic search, and user personalization features.
 
 > **💡 Foundation App:** This backend includes complete authentication system with JWT tokens, refresh tokens, email verification, password reset, role-based access control, and admin APIs. It's designed to be easily adapted for other projects - just remove the Quran-specific modules and keep the auth foundation!
 
@@ -41,14 +41,15 @@ The platform prioritizes accuracy, respect for Islamic content, and user-friendl
 - Developers building Islamic applications
 
 ### **Key Features:**
-- ✅ Complete Quran content (114 Surahs, 6,236+ verses)
-- ✅ Urdu translations and tafseer integration
-- ✅ Multiple navigation modes (Surah, Juz, Page)
-- ✅ Full-text search (Arabic, Urdu, Tafseer)
-- ✅ User bookmarks and reading progress tracking
-- ✅ JWT authentication with role-based access
-- ✅ RESTful API with Swagger documentation
-- ✅ Ready for scanned page integration (950+ pages via CDN)
+- ✅ **Page-Based Quran Viewer** - Display scanned Quran Aziz pages from Cloudinary CDN
+- ✅ **Page Navigation** - Navigate by Surah, Juz, or direct page number
+- ✅ **Topic Search** - Search topics in Urdu and jump to relevant pages
+- ✅ **Zoom & Navigation** - Zoom in/out, previous/next page, page number input
+- ✅ **Bookmarks** - Save favorite pages for quick access
+- ✅ **Reading Progress** - Track last read page per user
+- ✅ **JWT Authentication** - Secure login with role-based access
+- ✅ **RESTful API** - Complete API with Swagger documentation
+- ✅ **Scanned Page Integration** - Ready for 1027+ scanned pages via CDN
 
 ---
 
@@ -219,10 +220,10 @@ POST   /auth/reset-password       # Reset password
 ### **Key Entities:**
 - **Surah**: 114 chapters with metadata (name, verses count, revelation type)
 - **Verse**: 6,236+ verses with Arabic text, Urdu translation, tafseer
-- **QuranPage**: 604 pages with scanned image URLs (ready for CDN)
+- **QuranPage**: 1027 pages with scanned image URLs (ready for CDN)
 - **Juz**: 30 parts for structured navigation
-- **Bookmark**: User-specific verse bookmarks with notes
-- **ReadingProgress**: Track last read position per user
+- **Bookmark**: User-specific page bookmarks with notes
+- **ReadingProgress**: Track last read page per user
 
 ---
 
