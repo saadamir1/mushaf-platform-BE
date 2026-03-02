@@ -92,8 +92,8 @@ export class BookmarksService {
       where: { userId },
     });
 
-    // Calculate completion percentage (total pages in Mushaf = 604)
-    const TOTAL_PAGES = 604;
+    // Calculate completion percentage (total pages in Mushaf = 1027)
+    const TOTAL_PAGES = 1027;
     const completionPercentage = Math.min(Math.floor((pageNumber / TOTAL_PAGES) * 100), 100);
 
     if (!progress) {
