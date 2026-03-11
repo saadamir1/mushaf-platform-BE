@@ -7,26 +7,37 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Development CORS - allows all origins
-  if (process.env.NODE_ENV !== 'production') {
-    app.enableCors({
-      origin: true, // This allows all origins in development
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-      credentials: true,
-    });
-  } else {
-    // Production CORS - restrictive
-    app.enableCors({
-      origin: [
-        'https://pg-crud-frontend-44cu.vercel.app',
-        'https://pg-crud-frontend-44cu-saadamir1s-projects.vercel.app/',
-      ],
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-      credentials: true,
-    });
-  }
+  // CORS Configuration
+  const allowedOrigins = [
+    'http://localhost:3001',
+    'https://mushaf-platform-fe.vercel.app',
+    /^https:\/\/mushaf-platform-fe-.*\.vercel\.app$/, // All Vercel preview deployments
+  ];
+
+  app.enableCors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, Postman, etc.)
+      if (!origin) return callback(null, true);
+      
+      // Check if origin matches allowed origins
+      const isAllowed = allowedOrigins.some(allowed => {
+        if (typeof allowed === 'string') {
+          return origin === allowed;
+        }
+        return allowed.test(origin);
+      });
+      
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.log('Blocked origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
