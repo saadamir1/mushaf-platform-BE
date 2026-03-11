@@ -7,7 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // CORS Configuration
+  // CORS Configuration - Production Ready
   const allowedOrigins = [
     'http://localhost:3001',
     'https://mushaf-platform-fe.vercel.app',
@@ -16,15 +16,17 @@ async function bootstrap() {
 
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, Postman, etc.)
-      if (!origin) return callback(null, true);
+      // Allow requests with no origin (mobile apps, Postman, curl)
+      if (!origin) {
+        return callback(null, true);
+      }
       
-      // In development, allow all origins
+      // Development mode: allow all
       if (process.env.NODE_ENV === 'development') {
         return callback(null, true);
       }
       
-      // Check if origin matches allowed origins
+      // Production: check whitelist
       const isAllowed = allowedOrigins.some(allowed => {
         if (typeof allowed === 'string') {
           return origin === allowed;
@@ -33,15 +35,18 @@ async function bootstrap() {
       });
       
       if (isAllowed) {
-        callback(null, true);
-      } else {
-        console.log('Blocked origin:', origin);
-        callback(null, true); // TEMPORARILY allow all for debugging
+        return callback(null, true);
       }
+      
+      // Log blocked origins for debugging
+      console.warn(`[CORS] Blocked origin: ${origin}`);
+      return callback(new Error('Not allowed by CORS'));
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
   app.useGlobalPipes(
