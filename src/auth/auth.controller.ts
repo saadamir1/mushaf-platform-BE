@@ -121,7 +121,8 @@ export class AuthController {
   }
 
   @Post('bootstrap-admin')
-  @ApiOperation({ summary: 'Create first admin user (temporary endpoint)' })
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 attempts per minute
+  @ApiOperation({ summary: 'Create first admin user (one-time setup)' })
   @ApiResponse({
     status: 201,
     description: 'Admin user created successfully with tokens',
@@ -133,12 +134,14 @@ export class AuthController {
       },
     },
   })
+  @ApiResponse({ status: 409, description: 'Admin user already exists' })
   @ApiBody({
     schema: {
       type: 'object',
+      required: ['email', 'password', 'firstName', 'lastName'],
       properties: {
-        email: { type: 'string', example: 'admin@gmail.com' },
-        password: { type: 'string', example: 'admin' },
+        email: { type: 'string', example: 'admin@mushaf.com' },
+        password: { type: 'string', example: 'Admin@123' },
         firstName: { type: 'string', example: 'Admin' },
         lastName: { type: 'string', example: 'User' },
       },
@@ -177,6 +180,7 @@ export class AuthController {
   }
 
   @Post('forgot-password')
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 attempts per minute
   @ApiOperation({ summary: 'Request password reset' })
   @ApiResponse({ status: 201, description: 'Reset email sent if user exists' })
   async forgotPassword(@Body() dto: ForgotPasswordDto) {
@@ -192,8 +196,10 @@ export class AuthController {
   }
 
   @Post('send-verification')
-  @ApiOperation({ summary: 'Send email verification' })
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 attempts per minute
+  @ApiOperation({ summary: 'Resend email verification' })
   @ApiResponse({ status: 201, description: 'Verification email sent' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async sendEmailVerification(@Body() dto: ForgotPasswordDto) {
     return this.authService.sendEmailVerification(dto.email);
   }
