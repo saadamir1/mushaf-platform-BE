@@ -16,18 +16,38 @@ export class EmailService {
   private templates: Map<string, handlebars.TemplateDelegate> = new Map();
 
   constructor(private configService: ConfigService) {
+    const resendApiKey = this.configService.get<string>('RESEND_API_KEY');
     const emailUser = this.configService.get<string>('EMAIL_USER');
     const emailPass = this.configService.get<string>('EMAIL_PASS');
 
-    this.transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: emailUser,
-        pass: emailPass,
-      },
-    });
+    // Use Resend if API key is available (production)
+    if (resendApiKey) {
+      this.transporter = nodemailer.createTransport({
+        host: 'smtp.resend.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: 'resend',
+          pass: resendApiKey,
+        },
+      });
+      this.fromEmail = 'noreply@mushafplatform.com';
+      console.log('✓ Email service: Resend SMTP');
+    } else if (emailUser && emailPass) {
+      // Fallback to Gmail (development)
+      this.transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: emailUser,
+          pass: emailPass,
+        },
+      });
+      this.fromEmail = emailUser;
+      console.log('✓ Email service: Gmail SMTP');
+    } else {
+      console.error('✗ No email service configured');
+    }
 
-    this.fromEmail = emailUser || 'noreply@mushafplatform.com';
     this.frontendUrl =
       this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3001';
 
