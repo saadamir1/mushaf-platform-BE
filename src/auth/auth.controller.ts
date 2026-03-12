@@ -38,7 +38,8 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'User successfully registered' })
   @ApiResponse({ status: 409, description: 'Email already exists' })
   async register(@Body() dto: PublicRegisterDto) {
-    const userExists = await this.usersService.findByEmail(dto.email);
+    const normalizedEmail = dto.email.toLowerCase().trim();
+    const userExists = await this.usersService.findByEmail(normalizedEmail);
     if (userExists) {
       throw new UnauthorizedException('Email already in use');
     }
@@ -46,14 +47,14 @@ export class AuthController {
     const user = await this.usersService.create({
       firstName: dto.firstName,
       lastName: dto.lastName,
-      email: dto.email,
+      email: normalizedEmail,
       password: dto.password,
       isEmailVerified: true, // Auto-verify to bypass email issues in production
     });
 
     // Try to send email but don't block registration
     try {
-      await this.authService.sendEmailVerification(dto.email);
+      await this.authService.sendEmailVerification(normalizedEmail);
     } catch (error) {
       console.error('[Registration] Email send failed (non-blocking):', error.message);
     }

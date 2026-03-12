@@ -58,7 +58,9 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
+    return this.userRepository.findOne({ 
+      where: { email: email.toLowerCase().trim() } 
+    });
   }
 
   async findByRole(role: 'user' | 'admin'): Promise<User[]> {
@@ -77,6 +79,7 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     const user = this.userRepository.create({
       ...createUserDto,
+      email: createUserDto.email.toLowerCase().trim(),
       password: hashedPassword,
     });
     return this.userRepository.save(user);

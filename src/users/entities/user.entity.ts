@@ -10,6 +10,7 @@ export class User {
     name: 'email',
     nullable: false,
     default: '',
+    unique: true
   })
   email: string;
 
