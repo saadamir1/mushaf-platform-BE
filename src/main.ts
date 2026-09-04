@@ -81,6 +81,9 @@ async function bootstrap() {
     .addTag('Quran - Juz', 'Juz navigation')
     .addTag('Quran - Pages', 'Page management')
     .addTag('Quran - Search', 'Search functionality')
+    .addTag('Quran - Topics', 'Urdu topic index')
+    .addTag('Quran - Hotspots', 'Interactive page overlays')
+    .addTag('Quran - Insights', 'Smart reading coach')
     .addTag('Bookmarks & Reading Progress', 'User features')
     .build();
 

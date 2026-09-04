@@ -51,10 +51,10 @@ export class AuthService {
   async login(email: string, password: string) {
     const normalizedEmail = email.toLowerCase().trim();
     const user = await this.usersService.findByEmail(normalizedEmail);
-    if (!user) throw new UnauthorizedException('User not found');
+    if (!user) throw new UnauthorizedException('Invalid email or password');
 
     const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) throw new UnauthorizedException('Wrong password');
+    if (!passwordMatch) throw new UnauthorizedException('Invalid email or password');
 
     // Check if email is verified
     if (!user.isEmailVerified) {

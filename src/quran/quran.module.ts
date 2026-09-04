@@ -10,6 +10,8 @@ import { PagesModule } from './pages/pages.module';
 import { JuzModule } from './juz/juz.module';
 import { SearchModule } from './search/search.module';
 import { TopicsModule } from './topics/topics.module';
+import { HotspotsModule } from './hotspots/hotspots.module';
+import { InsightsModule } from './insights/insights.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { TopicsModule } from './topics/topics.module';
     JuzModule,
     SearchModule,
     TopicsModule,
+    HotspotsModule,
+    InsightsModule,
   ],
   exports: [TypeOrmModule],
 })
